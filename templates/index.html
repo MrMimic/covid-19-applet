@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+        <title>Demo applet C19</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="static/css/style.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+
+        <script src="/static/js/sliderBubble.js"></script>
+    </head>
+
+    <body>
+
+        <div class="container">
+            <h2>Demo applet C19</h2>
+
+            <p>
+                Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam,
+                feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies
+                mi vitae est. Mauris placerat eleifend leo.
+            </p>
+
+            <ul class="nav nav-tabs">
+                <li class="active"><a data-toggle="tab" href="#home">Application</a></li>
+                <li><a data-toggle="tab" href="#about">About</a></li>
+                <li><a data-toggle="tab" href="#tech">How doest it work</a></li>
+                <li><a data-toggle="tab" href="#links">Links</a></li>
+            </ul>
+
+            <div class="tab-content">
+
+                <!-- Tab 1: applet -->
+                <div id="home" class="tab-pane fade in active">
+
+                    <form method="POST">
+                        <!-- User query -->
+                        <div class="user-query-input-button-div">
+                            <input class="user-search-bar-input" type="text" placeholder="{{ query_last_value }}" name="user_query" autocomplete="off">
+                            <input class="user-search-button-input" type="submit">
+                        </div>
+                        <!-- Output message -->
+                        <div class="output-message">
+                            <p>{{ output_message }}</p>
+                        </div>
+                        <div class="user-interraction-div">
+                            <!-- Parameters table -->
+                            <div class="parameters-row">
+                                <label class="parameters-col-title" for="id_sim_threshold">Similarity threshold</label>
+                                <input class="parameters-col-slider" type="range" min="0" max="1" step="0.01" id="id_sim_threshold" value={{ sim_threshold_last_value }} class="slider" name="sim_threshold" onchange="updateTextInput(this.value, this.name);">
+                                <input class="parameter-col-value" type="text" id="sim_threshold_value" maxlength="4" size="4" value={{ sim_threshold_last_value }}>
+                            </div>
+                            <div class="parameters-row">
+                                <label class="parameters-col-title" for="id_n_sentence">Minimum sentences</label>
+                                <input class="parameters-col-slider" type="range" min="1" max="1000" step="10" id="id_n_sentence" value={{ n_sentence_last_value }} class="slider" name="n_sentence" onchange="updateTextInput(this.value, this.name);">
+                                <input class="parameter-col-value" type="text" id="n_sentence_value" maxlength="4" size="4" value={{ n_sentence_last_value }}>
+                            </div>
+                            <div class="parameters-row">
+                                <label class="parameters-col-title" for="id_number_cluster">Clusters number</label>
+                                <input class="parameters-col-slider" type="range" min="0" max="10" step="1" id="id_number_cluster" value={{ number_cluster_last_value }} class="slider" name="number_cluster" onchange="updateTextInput(this.value, this.name);">
+                                <input class="parameter-col-value" type="text" id="number_cluster_value" maxlength="4" size="4" value={{ number_cluster_last_value }}>
+                            </div>
+                            <div class="parameters-row">
+                                <label class="parameters-col-title" for="id_number_cluster">Min features / cluster</label>
+                                <input class="parameters-col-slider" type="range" min="1" max="100" step="1" id="id_feature_per_cluster" value={{ feature_per_cluster_last_value }} class="slider" name="feature_per_cluster" onchange="updateTextInput(this.value, this.name);">
+                                <input class="parameter-col-value" type="text" id="feature_per_cluster_value" maxlength="3" size="4" value={{ feature_per_cluster_last_value }}>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- Plot -->
+                    <div class="scatter-plot" id="scatter">
+                        <script>
+                            var graphs = {{ plot | safe }};
+                            Plotly.plot('scatter', graphs, {});
+                        </script>
+                    </div>
+                    <div class="text-output" id="text-output-panel">
+                        <h2>Text output ...</h2>
+                        {% for article in text_output %}
+                        <div>
+                            <h4 class="article-output-number">{{ article.number }}</h4>
+                            <p><b>{{ article.title }}</b></p>
+                            <p>{{ article.abstract }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Tab 2: about -->
+                <div id="about" class="tab-pane fade">
+                    <h3>About</h3>
+                    <p>{{ about }}</p>
+                    <dl>
+                        <dt>Definition list</dt>
+                        <dd>Consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
+                            aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+                            commodo consequat.</dd>
+                        <dt>Lorem ipsum dolor sit amet</dt>
+                        <dd>Consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
+                            aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+                            commodo consequat.</dd>
+                        </dl>
+                    </div>
+
+                <!-- Tab 3: tech details -->
+                <div id="tech" class="tab-pane fade">
+                    <h3>How doest it work</h3>
+                    <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam,
+                        feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies
+                        mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat
+                        wisi, condimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros
+                        ipsum rutrum orci, sagittis tempus lacus enim ac dui. Donec non enim in turpis pulvinar facilisis. Ut felis.
+                        Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam
+                        erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus
+                    </p>
+                </div>
+
+                <!-- Tab 4: links -->
+                <div id="links" class="tab-pane fade">
+                    <h3>Links</h3>
+                    <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam,
+                        feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies
+                        mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat
+                        wisi, condimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros
+                        ipsum rutrum orci, sagittis tempus lacus enim ac dui. Donec non enim in turpis pulvinar facilisis. Ut felis.
+                        Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam
+                        erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus</p>
+                </div>
+
+            </div>
+        </div>
+    </body>
+</html>

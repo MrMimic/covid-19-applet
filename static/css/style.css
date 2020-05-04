@@ -1,0 +1,114 @@
+/* GLOBAL */
+.h2 {
+    color: rgb(27, 27, 141);
+}
+
+/* PLOTLY */
+
+.modebar {
+    /* Remove plotly transparent control bar */
+    display: none !important;
+}
+
+
+.nav-tabs {
+    margin-top: 30px;
+}
+
+
+/* SEARCH BOX */
+.user-query-input-button-div {
+    margin-top: 25px;
+    width: 100%;
+    position: relative;
+    display: flex;
+}
+
+.user-search-bar-input {
+    width: 80%;
+}
+
+.user-search-bar-input:focus {
+    color: #00B4CC;
+}
+
+.user-search-button-input {
+  width: 15%;
+}
+
+
+/* OUTPUT MESSAGE */
+.output-message {
+    color: red;
+    padding-top: 40px;
+}
+
+
+/* PARAMETERS  */
+
+.user-interraction-div {
+    display: table;
+    background-color: #eee;
+    border: 1px solid #666666;
+    border-spacing: 10px;
+    float: left;
+    width: 35%;
+    padding-right: 20px;
+    margin-top: 95px;
+}
+
+.parameters-row {
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+.parameters-col-title {
+    display: table-column;
+    float: left;
+    background-color: #ccc;
+    width: 20%;
+    font-size: 8pt;
+    margin-right: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.parameters-col-slider {
+    display: inline-block table-column;
+    margin: 0 auto;
+    background-color: #ccc;
+    width: 50%;
+    opacity: 1;
+}
+
+.parameter-col-value {
+    display: table-column;
+    width: 20%;
+    float: right;
+    margin: 0 auto;
+    margin-left: 10px;
+}
+
+
+/* PLOT */
+
+.scatter-plot {
+    width: 65%;
+    float: right;
+    padding-left: 0;
+}
+
+
+/* Text OUTPUT */
+
+.text-output {
+    padding-top: 450px;
+    width: 100%;
+}
+
+.article-output-number {
+    margin-top: 40px;
+}
