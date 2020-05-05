@@ -85,10 +85,22 @@ Watch out, data are stored in cache for only 10min right now. First time you lau
 - Debian9
 - Startup script:
 
-
     #! /bin/bash
+    # Update
     apt-get -y update
     apt-get -y upgrade
+    # Update python
+    apt-get install build-essential
+    curl -O https://www.python.org/ftp/python/3.6.8/Python-3.6.8.tar.xz
+    tar -xf Python-3.6.8.tar.xz
+    cd Python-3.6.8
+    ./configure --enable-optimizations
+    make -j 8
+    sudo make altinstall
+    cd /usr/bin
+    sudo rm python3
+    sudo ln -s /usr/local/bin/python3.6 python3
+    apt-get install -y python-pip
     apt-get install -y python3-pip
     # Linking bucket
     mkdir /bucket
