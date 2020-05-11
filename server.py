@@ -196,6 +196,7 @@ def main():
         "plot": json_plot,
         "text_output": create_output_report(user_query, closest_sentences_df),
         # RST texts or logs to HTML
+        "page_header": rst_reader.get_html_text(page="page_header"),
         "logs_header": rst_reader.get_html_text(page="logs"),
         "application_logs": message,
         "about": rst_reader.get_html_text(page="about"),

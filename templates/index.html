@@ -24,12 +24,8 @@
 
         <div class="container">
             <h2>Demo applet C19</h2>
-
-            <p>
-                Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam,
-                feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies
-                mi vitae est. Mauris placerat eleifend leo.
-            </p>
+            <!-- Page header -->
+            <p>{{ page_header | safe }}</p>
 
             <ul class="nav nav-tabs">
                 <li class="active"><a data-toggle="tab" href="#home">Application</a></li>
@@ -83,7 +79,7 @@
                         </script>
                     </div>
                     <div class="text-output" id="text-output-panel">
-                        <h2>Text output ...</h2>
+                        <h2>Closest sentences</h2>
                         {% for article in text_output %}
                         <div>
                             <h4 class="article-output-sentences">{{ article.sentence }}</h4>
