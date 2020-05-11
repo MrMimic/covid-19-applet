@@ -178,8 +178,6 @@ def get_params():
 @app.route("/", methods=["GET", "POST"])
 def main():
     """ Main route """
-    # TODO: LA methode GET doit juste retourner le template
-    # Plutot que le try except du get_param
 
     # Update params with user's settings
     params = get_params()
@@ -240,9 +238,9 @@ def main():
     context = {
         "plot": json_plot,
         "output_message": message,
-        "about": reader.get_text(page="about"),
-        "how_does_it_work": reader.get_text(page="tech_details"),
-        "links": reader.get_text(page="links"),
+        "about": reader.get_html_text(page="about"),
+        "how_does_it_work": reader.get_html_text(page="tech_details"),
+        "links": reader.get_html_text(page="links"),
         "query_last_value": user_query,
         "sim_threshold_last_value": params.query.cosine_similarity_threshold,
         "n_sentence_last_value": params.query.minimum_sentences_kept,

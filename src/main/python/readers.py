@@ -24,7 +24,7 @@ class Reader:
             data = handler.read()
         return data
 
-    def get_text(self, page):
+    def get_html_text(self, page):
         """ Text should be got from rst files not in plain HTML """
         rst_data = self.read_rst(rst_path=os.path.join(self.data_path, f"{page}.rst"))
         html_data = self.rst_to_html(rst_string=rst_data)
