@@ -14,10 +14,11 @@ from flask import Flask, escape, render_template, request
 from flask_caching import Cache
 from plotly import graph_objs as go
 from security import validate_query
-from readers import get_about
+from readers import Reader
 
 LOCAL_DB_PATH = "/home/dynomante/projects/covid-19-kaggle/local_exec/articles_database_v14_02052020_test.sqlite"
 LOCAL_EMBEDDING_PATH = "/home/dynomante/projects/covid-19-kaggle/w2v_parquet_file_new_version.parquet"
+DEBUG = True
 
 # TODO: Make these parameters as arguments
 # TODO: Create an installation script
@@ -28,7 +29,7 @@ app = Flask(__name__)
 
 # Create cache
 config = {
-    "DEBUG": True,  # some Flask specific configs
+    "DEBUG": DEBUG,  # some Flask specific configs
     "CACHE_TYPE": "simple",  # Flask-Caching related configs
     "CACHE_DEFAULT_TIMEOUT": 300  # Will be re-set anyway
 }
@@ -231,12 +232,17 @@ def main():
         "abstract": "Abstract of the third article"
     }]
 
+    # Read rst data
+    reader = Reader(data_path="/home/dynomante/projects/covid-19-applet/static/texts")
+
     # Create HTML context
     # This is loaded into the template rendering.
     context = {
         "plot": json_plot,
         "output_message": message,
-        "about": get_about(),
+        "about": reader.get_text(page="about"),
+        "how_does_it_work": reader.get_text(page="tech_details"),
+        "links": reader.get_text(page="links"),
         "query_last_value": user_query,
         "sim_threshold_last_value": params.query.cosine_similarity_threshold,
         "n_sentence_last_value": params.query.minimum_sentences_kept,
@@ -252,4 +258,4 @@ def main():
 
 if __name__ == "__main__":
     # Run the server
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    app.run(debug=DEBUG, host="0.0.0.0", port=5000)
