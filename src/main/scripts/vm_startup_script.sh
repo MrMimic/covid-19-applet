@@ -1,5 +1,8 @@
 #!/usr/bin/bash
 
+# Create detached shell
+tmux new -s APP
+
 # Proxy update
 gcloud compute firewall-rules create --network=covid-19-network default-allow-ssh --allow tcp:22
 gcloud compute firewall-rules create --network=covid-19-network allow-debug-app --allow tcp:5000
