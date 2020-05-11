@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import json
 
 import numpy as np
@@ -11,14 +13,15 @@ from c19 import plot_clusters, query_matching, text_preprocessing
 from flask import Flask, escape, render_template, request
 from flask_caching import Cache
 from plotly import graph_objs as go
+from security import validate_query
+from readers import get_about
 
 LOCAL_DB_PATH = "/home/dynomante/projects/covid-19-kaggle/local_exec/articles_database_v14_02052020_test.sqlite"
 LOCAL_EMBEDDING_PATH = "/home/dynomante/projects/covid-19-kaggle/w2v_parquet_file_new_version.parquet"
 
 # TODO: Make these parameters as arguments
-# TODO: Create external lib in src/main/python
 # TODO: Create an installation script
-# TODO: Make this script runable by a script
+# TODO: Make these methods runable by a script
 
 # Create app
 app = Flask(__name__)
@@ -48,12 +51,6 @@ def load_sentence_from_cache(params):
         db_path=params.database.local_path)
 
     return all_db_sentences_original, embedding_model
-
-
-def get_about():
-    """ Text should be got from rst files not in plain HTML """
-    about = "Method to read 'about' section from file to be developped."
-    return about
 
 
 def compute_query_df(params, query):
@@ -175,26 +172,6 @@ def get_params():
         pass
 
     return params
-
-
-def detect_json(string):
-    """ Simple security """
-    try:
-        json.loads(string)
-        return True
-    except (ValueError, json.decoder.JSONDecodeError):
-        return False
-
-
-def validate_query(user_query):
-    """ Simple security """
-    # Ensure requets
-    user_query = escape(user_query)
-    # Keep out json
-    if detect_json(user_query) is True:
-        return None, "Why using JSON?"
-
-    return user_query, "Query processed"
 
 
 @app.route("/", methods=["GET", "POST"])
