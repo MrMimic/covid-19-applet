@@ -60,7 +60,8 @@ def query_df(params, query):
         params)
 
     print(query)
-    #TODO: increase threshold if too much sentences
+    # TODO: increase threshold if too much sentences
+    # TODO: The query should be also located in the df or propagated to be also plotted
 
     # Get K closest for each
     closest_sentences_df = query_matching.get_k_closest_sentences(
@@ -154,7 +155,6 @@ def main():
     """ Main route """
     # Update params with user's settings
     params = get_params()
-    params.query.cosine_similarity_threshold = 0.95
 
     # Get query
     default_user_query = "What do we know about Chloroquine to treat covid-19?"
