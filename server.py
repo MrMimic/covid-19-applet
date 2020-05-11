@@ -10,6 +10,7 @@ from flask import Flask, escape, render_template, request
 
 from c19_app import security, reader, plot
 from flask_caching import Cache
+from flask.helpers import url_for
 
 
 LOCAL_DB_PATH = "/home/dynomante/projects/covid-19-kaggle/local_exec/articles_database_v14_02052020_test.sqlite"
@@ -23,6 +24,8 @@ DEBUG = True
 # Create app
 app = Flask(__name__)
 
+
+
 # Create cache
 config = {
     "DEBUG": DEBUG,  # some Flask specific configs
@@ -31,7 +34,6 @@ config = {
 }
 app.config.from_mapping(config)
 cache = Cache(app)
-
 
 @cache.cached(timeout=600, key_prefix="all_sentences")
 def load_sentence_from_cache(params):
@@ -117,6 +119,10 @@ def get_params():
 def main():
     """ Main route """
 
+
+    # Favicon
+
+
     # Update params with user's settings
     params = get_params()
     # TODO: up this guy to 0.95 by default in lib
@@ -175,10 +181,10 @@ def main():
     # This is loaded into the template rendering.
     context = {
         "plot": json_plot,
-        "output_message": message,
         "about": rst_reader.get_html_text(page="about"),
         "how_does_it_work": rst_reader.get_html_text(page="tech_details"),
         "links": rst_reader.get_html_text(page="links"),
+        "application_logs": message,
         "query_last_value": user_query,
         "sim_threshold_last_value": params.query.cosine_similarity_threshold,
         "n_sentence_last_value": params.query.minimum_sentences_kept,

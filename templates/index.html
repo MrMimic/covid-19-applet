@@ -17,6 +17,8 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
 
         <script src="/static/js/sliderBubble.js"></script>
+
+        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     </head>
 
     <body>
@@ -48,10 +50,7 @@
                             <input class="user-search-bar-input" type="text" placeholder="{{ query_last_value }}" name="user_query" autocomplete="off">
                             <input class="user-search-button-input" type="submit">
                         </div>
-                        <!-- Log message -->
-                        <div class="logger-message">
-                            <p>{{ output_message }}</p>
-                        </div>
+                        <!-- Central div -->
                         <div class="user-interraction-div">
                             <!-- Parameters table -->
                             <div class="parameters-row">
@@ -95,19 +94,25 @@
                     </div>
                 </div>
 
-                <!-- Tab 2: about -->
+                <!-- Tab 2: logs -->
+                <div id="about" class="tab-pane fade">
+                    <h3>Application logs</h3>
+                    <p>{{ application_logs | safe }}</p>
+                </div>
+
+                <!-- Tab 3: about -->
                 <div id="about" class="tab-pane fade">
                     <h3>About</h3>
                     <p>{{ about | safe }}</p>
                 </div>
 
-                <!-- Tab 3: tech details -->
+                <!-- Tab 4: tech details -->
                 <div id="tech" class="tab-pane fade">
                     <h3>How doest it work</h3>
                     <p>{{ how_does_it_work | safe }}</p>
                 </div>
 
-                <!-- Tab 4: links -->
+                <!-- Tab 5: links -->
                 <div id="links" class="tab-pane fade">
                     <h3>Links</h3>
                     <p>{{ links | safe }}</p>
