@@ -128,7 +128,7 @@ def create_output_report(query: str,
                          top_x: int = 3) -> None:
 
     if closest_sentences_df is None:
-        return None
+        return []
     output = []
     number_of_kept_sentences = closest_sentences_df.shape[0]
     number_of_unique_papers = closest_sentences_df.paper_doi.unique().size
@@ -185,6 +185,8 @@ def main():
             # SO we can handle return message differently
             closest_sentences_df = None
             message = f"problem: {error}"
+    else:
+        closest_sentences_df = None
 
     # Create a reader to get RST data
     rst_reader = reader.Reader(data_path=os.path.join("static", "texts"))
