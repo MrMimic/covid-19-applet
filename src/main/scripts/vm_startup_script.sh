@@ -39,7 +39,7 @@ poetry install
 python3 -m nltk.downloader stopwords
 python3 -m nltk.downloader punkt
 
-# Update local path
+# Update local path and run
 sed -i "s;LOCAL_DB_PATH = .*;LOCAL_DB_PATH = '/home/$USER/data/articles_database_v14_02052020_test.sqlite';" server.py
 sed -i "s;LOCAL_EMBEDDING_PATH = .*;LOCAL_EMBEDDING_PATH = '/home/$USER/covid-19-kaggle/resources/global_df_w2v_tfidf.parquet';" server.py
 python3 server.py

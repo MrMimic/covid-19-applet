@@ -1,20 +1,16 @@
 #!/usr/bin/env python3
 
-import json
 
 import numpy as np
 import pandas as pd
-from sklearn.decomposition import PCA
 
-import plotly
-from c19 import clusterise_sentences, database_utilities, embedding
 from c19 import parameters as c19_parameters
-from c19 import plot_clusters, query_matching, text_preprocessing
+from c19 import query_matching, text_preprocessing, clusterise_sentences, database_utilities, embedding
 from flask import Flask, escape, render_template, request
+
+from c19_app import security, reader, plot
 from flask_caching import Cache
-from plotly import graph_objs as go
-from security import validate_query
-from readers import Reader
+
 
 LOCAL_DB_PATH = "/home/dynomante/projects/covid-19-kaggle/local_exec/articles_database_v14_02052020_test.sqlite"
 LOCAL_EMBEDDING_PATH = "/home/dynomante/projects/covid-19-kaggle/w2v_parquet_file_new_version.parquet"
@@ -54,7 +50,7 @@ def load_sentence_from_cache(params):
     return all_db_sentences_original, embedding_model
 
 
-def compute_query_df(params, query):
+def query_df(params, query):
     """ Use the lib to process the query """
     # Load cached sentences from SQLite
     all_db_sentences_original, embedding_model = load_sentence_from_cache(
@@ -80,64 +76,6 @@ def compute_query_df(params, query):
         min_feature_per_cluster=params.query.min_feature_per_cluster)
 
     return closest_sentences_df
-
-
-def create_plot(params, df):
-    """ Method to plot the DF """
-
-    # Reduce vectors dimensions
-    pca = PCA(n_components=2)
-    # vectors = [json.loads(x) for x in df.vector.to_list()]
-    vector_reduced = pca.fit_transform(df.vector.to_list())
-    df["x"] = [vector[0] for vector in vector_reduced]
-    df["y"] = [vector[1] for vector in vector_reduced]
-
-    # Split raw sentences and join them back with <BR /> for prettier output
-    df["sentence_split"] = [
-        plot_clusters.add_br_every(s, 7) for s in df.raw_sentence.to_list()
-    ]
-
-    data = []
-    # Here we should get multi scatter foreach cluster with "name" attribute
-    # Color as well should be set foreach
-    for cluster_id in df["cluster"].unique():
-        sub_df = df[df["cluster"] == cluster_id]
-        sub_plot = go.Scatter(x=sub_df["x"],
-                              y=sub_df["y"],
-                              mode="markers",
-                              hovertext=sub_df["sentence_split"],
-                              name=f"Cluster {cluster_id}",
-                              hoverinfo="text")
-        data.append(sub_plot)
-
-    # THat stuff should go to a config file
-    layout = go.Layout(yaxis={
-        "visible": True,
-        "showgrid": True,
-        "zeroline": False,
-        "showticklabels": False
-    },
-                       xaxis={
-                           "visible": True,
-                           "showgrid": True,
-                           "zeroline": False,
-                           "showticklabels": False
-                       },
-                       margin={
-                           "l": 50,
-                           "r": 50,
-                           "b": 50,
-                           "t": 20,
-                           "pad": 0
-                       },
-                       showlegend=True,
-                       legend={"orientation": "h"},
-                       hovermode="closest")
-
-    figure = dict(data=data, layout=layout)
-    graphJSON = json.dumps(figure, cls=plotly.utils.PlotlyJSONEncoder)
-
-    return graphJSON
 
 
 def get_params():
@@ -197,7 +135,7 @@ def main():
     # Validate user query
     # TODO: lib should return messages in addition to log them
     # So we can print logs here too (such as "number of cluster decreased because of blabla")
-    validated_query, message = validate_query(user_query)
+    validated_query, message = security.validate_query(user_query)
 
     # Create plot as JSON data to be sent to Jinja
     json_plot = None
@@ -205,9 +143,9 @@ def main():
         # Compute sentences DF
         # The heavy part of that stuff is cached
         try:
-            closest_sentences_df = compute_query_df(params, validated_query)
+            closest_sentences_df = query_df(params, validated_query)
             # Create plot from that DF
-            json_plot = create_plot(params, closest_sentences_df)
+            json_plot = plot.scatter(params, closest_sentences_df)
         except Exception as error:
             # TODO: Should be change into a proper exception in lib process_query
             # SO we can handle return message differently
@@ -231,16 +169,16 @@ def main():
     }]
 
     # Read rst data
-    reader = Reader(data_path="/home/dynomante/projects/covid-19-applet/static/texts")
+    rst_reader = reader.Reader(data_path="/home/dynomante/projects/covid-19-applet/static/texts")
 
     # Create HTML context
     # This is loaded into the template rendering.
     context = {
         "plot": json_plot,
         "output_message": message,
-        "about": reader.get_html_text(page="about"),
-        "how_does_it_work": reader.get_html_text(page="tech_details"),
-        "links": reader.get_html_text(page="links"),
+        "about": rst_reader.get_html_text(page="about"),
+        "how_does_it_work": rst_reader.get_html_text(page="tech_details"),
+        "links": rst_reader.get_html_text(page="links"),
         "query_last_value": user_query,
         "sim_threshold_last_value": params.query.cosine_similarity_threshold,
         "n_sentence_last_value": params.query.minimum_sentences_kept,
