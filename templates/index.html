@@ -10,6 +10,7 @@
 
         <link rel="stylesheet" href="static/css/style.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link rel="shortcut icon" href="{{ favicon_path }}">
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
@@ -17,8 +18,6 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
 
         <script src="/static/js/sliderBubble.js"></script>
-
-        <link rel="shortcut icon" href="{{ favicon_path }}">
     </head>
 
     <body>
@@ -87,9 +86,11 @@
                         <h2>Text output ...</h2>
                         {% for article in text_output %}
                         <div>
-                            <h4 class="article-output-number">{{ article.number }}</h4>
-                            <p><b>{{ article.title }}</b></p>
-                            <p>{{ article.abstract }}</p>
+                            <h4 class="article-output-sentences">{{ article.sentence }}</h4>
+                            <p><b>Cluster: </b>{{ article.cluster }}</p>
+                            <p><b>Similarity: </b>{{ article.distance }}</p>
+                            <p><b>From article: </b>{{ article.title }}</b>
+                            <p><b>DOI: </b><a href="https://www.doi.org/{{ article.doi }}" target="_blank">{{ article.doi }}</a></b>
                         </div>
                         {% endfor %}
                     </div>

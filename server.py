@@ -116,8 +116,38 @@ def get_params():
     return params
 
 
-def fav():
+def get_favicon_path():
     return url_for('static', filename='favicon.ico')
+
+
+def create_output_report(query: str,
+                         closest_sentences_df: pd.DataFrame,
+                         db_path: str = LOCAL_DB_PATH,
+                         task: str = None,
+                         subtask: str = None,
+                         top_x: int = 3) -> None:
+
+    if closest_sentences_df is None:
+        return None
+    output = []
+    number_of_kept_sentences = closest_sentences_df.shape[0]
+    number_of_unique_papers = closest_sentences_df.paper_doi.unique().size
+    number_of_clusters = closest_sentences_df.cluster.unique().size
+    for cluster in sorted(closest_sentences_df.cluster.unique().tolist()):
+        sub_df = closest_sentences_df[closest_sentences_df["cluster"] ==
+                                      cluster].sort_values(by="distance",
+                                                           ascending=False)
+        for index, row in sub_df.head(top_x).iterrows():
+            sub_output = {}
+            # As a markdown list
+            sub_output["sentence"] = row.raw_sentence
+            sub_output["distance"] = row.distance
+            sub_output["cluster"] = row.cluster
+            sub_output["title"] = database_utilities.get_article(paper_doi=row.paper_doi, db_path=db_path)[0][4]
+            sub_output["doi"] = row.paper_doi
+            output.append(sub_output)
+    return output
+
 
 @app.route("/", methods=["GET", "POST"])
 def main():
@@ -156,31 +186,15 @@ def main():
             closest_sentences_df = None
             message = f"problem: {error}"
 
-    # TODO: Treat DF to get sentences to be plotted.
-    # Goal is to create a dict to dynamically create HTML
-    output_report = [{
-        "number": "Article 1",
-        "title": "Title of the first article",
-        "abstract": "Abstract of the first article"
-    }, {
-        "number": "Article 2",
-        "title": "Title of the second article",
-        "abstract": "Abstract of the second article"
-    }, {
-        "number": "Article 3",
-        "title": "Title of the third article",
-        "abstract": "Abstract of the third article"
-    }]
-
     # Create a reader to get RST data
     rst_reader = reader.Reader(data_path=os.path.join("static", "texts"))
 
     # Create HTML context
     context = {
-        "favicon_path": fav(),
+        "favicon_path": get_favicon_path(),
         # JSON plot and text output
         "plot": json_plot,
-        "text_output": output_report,
+        "text_output": create_output_report(user_query, closest_sentences_df),
         # RST texts or logs to HTML
         "logs_header": rst_reader.get_html_text(page="logs"),
         "application_logs": message,
