@@ -11,6 +11,7 @@ from flask import Flask, escape, render_template, request
 from c19_app import security, reader, plot
 from flask_caching import Cache
 from flask.helpers import url_for
+import os
 
 
 LOCAL_DB_PATH = "/home/dynomante/projects/covid-19-kaggle/local_exec/articles_database_v14_02052020_test.sqlite"
@@ -115,14 +116,12 @@ def get_params():
     return params
 
 
+def fav():
+    return url_for('static', filename='favicon.ico')
+
 @app.route("/", methods=["GET", "POST"])
 def main():
     """ Main route """
-
-
-    # Favicon
-
-
     # Update params with user's settings
     params = get_params()
     # TODO: up this guy to 0.95 by default in lib
@@ -147,7 +146,6 @@ def main():
     json_plot = None
     if validated_query is not None:
         # Compute sentences DF
-        # The heavy part of that stuff is cached
         try:
             closest_sentences_df = query_df(params, validated_query)
             # Create plot from that DF
@@ -174,28 +172,31 @@ def main():
         "abstract": "Abstract of the third article"
     }]
 
-    # Read rst data
-    rst_reader = reader.Reader(data_path="/home/dynomante/projects/covid-19-applet/static/texts")
+    # Create a reader to get RST data
+    rst_reader = reader.Reader(data_path=os.path.join("static", "texts"))
 
     # Create HTML context
-    # This is loaded into the template rendering.
     context = {
+        "favicon_path": fav(),
+        # JSON plot and text output
         "plot": json_plot,
+        "text_output": output_report,
+        # RST texts or logs to HTML
+        "logs_header": rst_reader.get_html_text(page="logs"),
+        "application_logs": message,
         "about": rst_reader.get_html_text(page="about"),
         "how_does_it_work": rst_reader.get_html_text(page="tech_details"),
         "links": rst_reader.get_html_text(page="links"),
-        "application_logs": message,
+        # Selected options
         "query_last_value": user_query,
         "sim_threshold_last_value": params.query.cosine_similarity_threshold,
         "n_sentence_last_value": params.query.minimum_sentences_kept,
         "number_cluster_last_value": params.query.number_of_clusters,
-        "feature_per_cluster_last_value": params.query.min_feature_per_cluster,
-        "text_output": output_report
+        "feature_per_cluster_last_value": params.query.min_feature_per_cluster
     }
-
-    # Return render
-    index_template = render_template("index.html", **context)
-    return index_template
+    # Return render template + context
+    html_template = render_template("index.html", **context)
+    return html_template
 
 
 if __name__ == "__main__":

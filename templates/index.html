@@ -18,7 +18,7 @@
 
         <script src="/static/js/sliderBubble.js"></script>
 
-        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+        <link rel="shortcut icon" href="{{ favicon_path }}">
     </head>
 
     <body>
@@ -34,6 +34,7 @@
 
             <ul class="nav nav-tabs">
                 <li class="active"><a data-toggle="tab" href="#home">Application</a></li>
+                <li><a data-toggle="tab" href="#logs">Logs</a></li>
                 <li><a data-toggle="tab" href="#about">About</a></li>
                 <li><a data-toggle="tab" href="#tech">How doest it work</a></li>
                 <li><a data-toggle="tab" href="#links">Links</a></li>
@@ -95,8 +96,9 @@
                 </div>
 
                 <!-- Tab 2: logs -->
-                <div id="about" class="tab-pane fade">
+                <div id="logs" class="tab-pane fade">
                     <h3>Application logs</h3>
+                    <p>{{ logs_header | safe }}</p>
                     <p>{{ application_logs | safe }}</p>
                 </div>
 
