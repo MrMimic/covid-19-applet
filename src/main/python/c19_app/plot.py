@@ -1,11 +1,22 @@
 #!/usr/bin/env python3
 
-
 from c19 import plot_clusters
 from sklearn.decomposition import PCA
 from plotly import graph_objs as go
 import json
 import plotly
+
+
+def combine_doi_and_sentences(sub_df):
+    """ Add link to paper DOI to scatter points """
+    sentences = sub_df["sentence_split"]
+    dois = sub_df["paper_doi"]
+    data = [
+        f'{s}<br /><a href="https://www.doi.org/{d}" target="_blank">{d}</a>'
+        for d, s in zip(dois, sentences)
+    ]
+    return data
+
 
 def scatter(params, df):
     """ Method to plot the DF """
@@ -30,8 +41,10 @@ def scatter(params, df):
         sub_plot = go.Scatter(x=sub_df["x"],
                               y=sub_df["y"],
                               mode="markers",
-                              hovertext=sub_df["sentence_split"],
+                              hovertext=combine_doi_and_sentences(sub_df),
                               name=f"Cluster {cluster_id}",
+                              customdata=['https://www.baidu.com'] *
+                              sub_df.shape[0],
                               hoverinfo="text")
         data.append(sub_plot)
 
