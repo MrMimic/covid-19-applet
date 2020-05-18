@@ -20,6 +20,6 @@ def validate_query(user_query):
     user_query = escape(user_query)
     # Keep out json
     if detect_json(user_query) is True:
-        return None, "Why using JSON?"
+        return None, "JSON-like queries are not allowed."
 
-    return user_query, "Query processed"
+    return user_query, "Query validated."

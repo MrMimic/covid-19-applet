@@ -16,6 +16,7 @@ import os
 
 LOCAL_DB_PATH = "/home/dynomante/projects/covid-19-kaggle/local_exec/articles_database_v14_02052020_test.sqlite"
 LOCAL_EMBEDDING_PATH = "/home/dynomante/projects/covid-19-kaggle/w2v_parquet_file_new_version.parquet"
+CACHE_TIME = 600
 DEBUG = True
 
 # TODO: Make these parameters as arguments
@@ -25,18 +26,16 @@ DEBUG = True
 # Create app
 app = Flask(__name__)
 
-
-
 # Create cache
 config = {
-    "DEBUG": DEBUG,  # some Flask specific configs
-    "CACHE_TYPE": "simple",  # Flask-Caching related configs
-    "CACHE_DEFAULT_TIMEOUT": 300  # Will be re-set anyway
+    "DEBUG": DEBUG,
+    "CACHE_TYPE": "simple",
+    "CACHE_DEFAULT_TIMEOUT": CACHE_TIME
 }
 app.config.from_mapping(config)
 cache = Cache(app)
 
-@cache.cached(timeout=600, key_prefix="all_sentences")
+@cache.cached(timeout=CACHE_TIME, key_prefix="all_sentences")
 def load_sentence_from_cache(params):
     """ That will create a cache with all sentences to be matched vs query """
     # Load pre-trained word vectors
@@ -64,28 +63,30 @@ def query_df(params, query):
     # TODO: The query should be also located in the df or propagated to be also plotted
 
     # Get K closest for each
-    closest_sentences_df = query_matching.get_k_closest_sentences(
+    closest_sentences_df, query_logs = query_matching.get_k_closest_sentences(
         query=query,
         all_sentences=all_db_sentences_original,
         embedding_model=embedding_model,
         minimal_number_of_sentences=params.query.minimum_sentences_kept,
-        similarity_threshold=params.query.cosine_similarity_threshold)
+        similarity_threshold=params.query.cosine_similarity_threshold,
+        return_logs=True)
 
     # Clusterise them
-    closest_sentences_df = clusterise_sentences.perform_kmean(
+    closest_sentences_df, kmean_logs = clusterise_sentences.perform_kmean(
         k_closest_sentences_df=closest_sentences_df,
         number_of_clusters=params.query.number_of_clusters,
         k_min=params.query.k_min,
         k_max=params.query.k_max,
-        min_feature_per_cluster=params.query.min_feature_per_cluster)
+        min_feature_per_cluster=params.query.min_feature_per_cluster,
+        return_logs=True)
 
-    return closest_sentences_df
+    log_query = query_logs + kmean_logs
+    return closest_sentences_df, log_query
 
 
 def get_params():
     """ Return default param with updated value from input """
     # Get default parameters and adjust with user's input
-    print(list(request.form.keys()))
     params = c19_parameters.Parameters(
         database=c19_parameters.Database(local_path=LOCAL_DB_PATH),
         embedding=c19_parameters.Embedding(local_path=LOCAL_EMBEDDING_PATH))
@@ -153,6 +154,10 @@ def create_output_report(query: str,
 @app.route("/", methods=["GET", "POST"])
 def main():
     """ Main route """
+
+    # Query logs
+    query_logs = []
+
     # Update params with user's settings
     params = get_params()
 
@@ -166,23 +171,24 @@ def main():
         user_query = default_user_query
 
     # Validate user query
-    # TODO: lib should return messages in addition to log them
-    # So we can print logs here too (such as "number of cluster decreased because of blabla")
-    validated_query, message = security.validate_query(user_query)
+    validated_query, validation_log = security.validate_query(user_query)
+    query_logs.append(validation_log)
 
     # Create plot as JSON data to be sent to Jinja
     json_plot = None
     if validated_query is not None:
-        # Compute sentences DF
         try:
-            closest_sentences_df = query_df(params, validated_query)
+            # Compute sentences DF
+            closest_sentences_df, k_sentence_kmeans_logs = query_df(params, validated_query)
+            query_logs += k_sentence_kmeans_logs
             # Create plot from that DF
             json_plot = plot.scatter(params, closest_sentences_df)
         except Exception as error:
             # TODO: Should be change into a proper exception in lib process_query
             # SO we can handle return message differently
             closest_sentences_df = None
-            message = f"problem: {error}"
+            error_log = f"Issue with the query: {error}"
+            query_logs.append(error_log)
     else:
         closest_sentences_df = None
 
@@ -198,7 +204,7 @@ def main():
         # RST texts or logs to HTML
         "page_header": rst_reader.get_html_text(page="page_header"),
         "logs_header": rst_reader.get_html_text(page="logs"),
-        "application_logs": message,
+        "application_logs": query_logs,
         "about": rst_reader.get_html_text(page="about"),
         "how_does_it_work": rst_reader.get_html_text(page="tech_details"),
         "links": rst_reader.get_html_text(page="links"),

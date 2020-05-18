@@ -37,14 +37,6 @@
 }
 
 
-/* OUTPUT MESSAGE */
-.logger-message {
-    color: red;
-    padding-top: 40px;
-    background-color: beige;
-}
-
-
 /* PARAMETERS  */
 
 .user-interraction-div {
@@ -111,5 +103,13 @@
 }
 
 .article-output-sentences {
+    margin-top: 40px;
+}
+
+/* Logs */
+
+.logging-output {
+    background-color: bisque;
+    width: 50%;
     margin-top: 40px;
 }

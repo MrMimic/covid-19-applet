@@ -96,7 +96,11 @@
                 <div id="logs" class="tab-pane fade">
                     <h3>Application logs</h3>
                     <p>{{ logs_header | safe }}</p>
-                    <p>{{ application_logs | safe }}</p>
+                    <div class="logging-output">
+                        {% for log in application_logs %}
+                        <p>{{ log | safe }}</p>
+                        {% endfor %}
+                    </div>
                 </div>
 
                 <!-- Tab 3: about -->
