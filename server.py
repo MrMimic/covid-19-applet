@@ -119,7 +119,7 @@ def get_params():
 
 
 def get_favicon_path():
-    return url_for('static', filename='favicon.ico')
+    return url_for("static", filename="favicon.ico")
 
 
 def create_output_report(query: str,
@@ -178,14 +178,12 @@ def main():
     json_plot = None
     if validated_query is not None:
         try:
-            # Compute sentences DF
+            # Compute closest sentences DF
             closest_sentences_df, k_sentence_kmeans_logs = query_df(params, validated_query)
             query_logs += k_sentence_kmeans_logs
             # Create plot from that DF
             json_plot = plot.scatter(params, closest_sentences_df)
         except Exception as error:
-            # TODO: Should be change into a proper exception in lib process_query
-            # SO we can handle return message differently
             closest_sentences_df = None
             error_log = f"Issue with the query: {error}"
             query_logs.append(error_log)
