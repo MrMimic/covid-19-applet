@@ -63,13 +63,13 @@ def query_df(params, query):
     # TODO: The query should be also located in the df or propagated to be also plotted
 
     # Get K closest for each
-    closest_sentences_df, query_logs = query_matching.get_k_closest_sentences(
+    closest_sentences_df, query_logs, query_vector = query_matching.get_k_closest_sentences(
         query=query,
         all_sentences=all_db_sentences_original,
         embedding_model=embedding_model,
         minimal_number_of_sentences=params.query.minimum_sentences_kept,
         similarity_threshold=params.query.cosine_similarity_threshold,
-        return_logs=True)
+        return_logs_and_query_vector=True)
 
     # Clusterise them
     closest_sentences_df, kmean_logs = clusterise_sentences.perform_kmean(
@@ -81,7 +81,7 @@ def query_df(params, query):
         return_logs=True)
 
     log_query = query_logs + kmean_logs
-    return closest_sentences_df, log_query
+    return closest_sentences_df, log_query, query_vector
 
 
 def get_params():
@@ -179,10 +179,10 @@ def main():
     if validated_query is not None:
         try:
             # Compute closest sentences DF
-            closest_sentences_df, k_sentence_kmeans_logs = query_df(params, validated_query)
+            closest_sentences_df, k_sentence_kmeans_logs, query_vector = query_df(params, validated_query)
             query_logs += k_sentence_kmeans_logs
             # Create plot from that DF
-            json_plot = plot.scatter(params, closest_sentences_df)
+            json_plot = plot.scatter(params, closest_sentences_df, query_vector)
         except Exception as error:
             closest_sentences_df = None
             error_log = f"Issue with the query: {error}"

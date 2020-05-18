@@ -20,7 +20,7 @@ def combine_doi_and_sentences(sub_df):
     return data
 
 
-def scatter(params, df):
+def scatter(params, df, query_vector):
     """ Method to plot the DF """
 
     # Reduce vectors dimensions
@@ -28,6 +28,11 @@ def scatter(params, df):
     vector_reduced = pca.fit_transform(df.vector.to_list())
     df["x"] = [vector[0] for vector in vector_reduced]
     df["y"] = [vector[1] for vector in vector_reduced]
+
+    # Reduce query's dimensions to be plotted
+    query_reduced = pca.transform([query_vector])
+    query_x = query_reduced[0][0]
+    query_y = query_reduced[0][1]
 
     # Split raw sentences and join them back with <BR /> for prettier output
     df["sentence_split"] = [
@@ -45,6 +50,18 @@ def scatter(params, df):
                               name=f"Cluster {cluster_id}",
                               hoverinfo="text")
         data.append(sub_plot)
+
+    # Add query to the plot
+    query_plot = go.Scatter(x=[query_x],
+                            y=[query_y],
+                            mode="markers",
+                            hovertext="Query",
+                            name="Query",
+                            hoverinfo="text",
+                            marker_symbol="diamond",
+                            marker_size=10,
+                            marker_color="black")
+    data.append(query_plot)
 
     # Load layout for this graphe
     layout = go.Layout(
