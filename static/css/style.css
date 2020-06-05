@@ -109,7 +109,45 @@
 /* Logs */
 
 .logging-output {
-    background-color: bisque;
+    background-color: rgb(255, 246, 235);
     width: 50%;
     margin-top: 40px;
+}
+
+
+/* TEST */
+
+
+a.bulle {
+    position: relative;
+    color: #C800F0;
+    text-decoration: none;
+    font-family: arial, verdana, sans-serif;
+    text-align: center;
+}
+
+a.bulle:hover {
+    background: none;
+    z-index: 50;
+}
+
+a.bulle span {
+    display: none;
+}
+
+a.bulle:hover span {
+    display: block;
+    position: absolute;
+    top: -40px;
+    left: 0px;
+    font-family: arial, verdana, sans-serif;
+    text-align: left;
+    font-size: 17px;
+    color: #0CBFA7;
+    font-weight: normal;
+    width: 200px;
+    background: white;
+    padding: 5px;
+    border: #62c0f4 solid 1px;
+    text-indent: 0;
 }

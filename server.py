@@ -204,7 +204,6 @@ def main():
         "logs_header": rst_reader.get_html_text(page="logs"),
         "application_logs": query_logs,
         "about": rst_reader.get_html_text(page="about"),
-        "how_does_it_work": rst_reader.get_html_text(page="tech_details"),
         "links": rst_reader.get_html_text(page="links"),
         # Selected options
         "query_last_value": user_query,

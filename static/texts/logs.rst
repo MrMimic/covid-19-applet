@@ -1,1 +1,7 @@
-All texts from this application are stored in RST files. These texts are loaded by Python to create dynamic HTML. They still have to be written.
+This is the log application panel.
+
+When processing your query, the engine can find some parameters which have to be adjusted in order to stay compliant with what you asked.
+
+---------------------------------
+
+The panel below indicates which changes have been applied to your parameters.

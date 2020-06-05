@@ -1,8 +1,4 @@
 #!/usr/bin/env python3
-
-
-
-
 import os
 from docutils.core import publish_string
 
@@ -10,9 +6,8 @@ from docutils.core import publish_string
 class Reader:
 
     def __init__(self, data_path: str = os.path.join("static", "texts")):
-
         self.data_path = data_path
-        assert all([file in os.listdir(self.data_path) for file in ["about.rst", "tech_details.rst", "links.rst"]]), "Missing file in static text data."
+        assert all([file in os.listdir(self.data_path) for file in ["about.rst", "links.rst"]]), "Missing file in static text data."
 
     @staticmethod
     def rst_to_html(rst_string: str):

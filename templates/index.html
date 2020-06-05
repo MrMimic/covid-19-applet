@@ -3,7 +3,7 @@
 <html lang="en">
 
     <head>
-        <title>Demo applet C19</title>
+        <title>Covid-19 Opinions Extraction tools</title>
 
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -23,7 +23,7 @@
     <body>
 
         <div class="container">
-            <h2>Demo applet C19</h2>
+            <h2>Covid-19 Opinions Extraction tools</h2>
             <!-- Page header -->
             <p>{{ page_header | safe }}</p>
 
@@ -31,7 +31,6 @@
                 <li class="active"><a data-toggle="tab" href="#home">Application</a></li>
                 <li><a data-toggle="tab" href="#logs">Logs</a></li>
                 <li><a data-toggle="tab" href="#about">About</a></li>
-                <li><a data-toggle="tab" href="#tech">How doest it work</a></li>
                 <li><a data-toggle="tab" href="#links">Links</a></li>
             </ul>
 
@@ -50,7 +49,16 @@
                         <div class="user-interraction-div">
                             <!-- Parameters table -->
                             <div class="parameters-row">
-                                <label class="parameters-col-title" for="id_sim_threshold">Similarity threshold</label>
+                                <label class="parameters-col-title" for="id_sim_threshold">
+                                    <a href="#" class="bulle">Similarity threshold 
+                                        <span>
+                                        This parameter allows to select closest sentences to your query in the scientific corpus.
+                                        The closest the value is to one, the more strict you will be on sentences similarity,
+                                        thus selecting less sentence in total for the graph
+                                        </span>
+                                    </a>
+                                </label>
+                                <!-- <label class="parameters-col-title" for="id_sim_threshold">Similarity threshold</label> -->
                                 <input class="parameters-col-slider" type="range" min="0" max="1" step="0.01" id="id_sim_threshold" value={{ sim_threshold_last_value }} class="slider" name="sim_threshold" onchange="updateTextInput(this.value, this.name);">
                                 <input class="parameter-col-value" type="text" id="sim_threshold_value" maxlength="4" size="4" value={{ sim_threshold_last_value }}>
                             </div>
@@ -109,13 +117,7 @@
                     <p>{{ about | safe }}</p>
                 </div>
 
-                <!-- Tab 4: tech details -->
-                <div id="tech" class="tab-pane fade">
-                    <h3>How doest it work</h3>
-                    <p>{{ how_does_it_work | safe }}</p>
-                </div>
-
-                <!-- Tab 5: links -->
+                <!-- Tab 4: links -->
                 <div id="links" class="tab-pane fade">
                     <h3>Links</h3>
                     <p>{{ links | safe }}</p>

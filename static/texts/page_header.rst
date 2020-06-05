@@ -1,1 +1,3 @@
-All texts from this application are stored in RST files. These texts are loaded by Python to create dynamic HTML. They still have to be written.
+An intelligent solution made in Atos France for opinions mining in scientific litterature.
+
+Ask this app to find different opinions about a Covid-related subject.
