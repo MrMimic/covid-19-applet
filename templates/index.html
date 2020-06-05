@@ -49,31 +49,56 @@
                         <div class="user-interraction-div">
                             <!-- Parameters table -->
                             <div class="parameters-row">
-                                <label class="parameters-col-title" for="id_sim_threshold">
-                                    <a href="#" class="bulle">Similarity threshold 
+                                <label class="parameters-col-title" for="id_sim_threshold">Similarity threshold
+                                    <a href="#" class="hover">
+                                        <img src="/static/info.svg" alt="infos" width="15" height="15">
                                         <span>
-                                        This parameter allows to select closest sentences to your query in the scientific corpus.
-                                        The closest the value is to one, the more strict you will be on sentences similarity,
-                                        thus selecting less sentence in total for the graph
+                                            This parameter allows to <b>select closest sentences</b> to your query in the scientific corpus.
+                                            The closest the value is to one, the more strict you will be on sentences similarity,
+                                            thus selecting <b>less sentence in total</b> for the graph.
                                         </span>
                                     </a>
                                 </label>
-                                <!-- <label class="parameters-col-title" for="id_sim_threshold">Similarity threshold</label> -->
                                 <input class="parameters-col-slider" type="range" min="0" max="1" step="0.01" id="id_sim_threshold" value={{ sim_threshold_last_value }} class="slider" name="sim_threshold" onchange="updateTextInput(this.value, this.name);">
                                 <input class="parameter-col-value" type="text" id="sim_threshold_value" maxlength="4" size="4" value={{ sim_threshold_last_value }}>
                             </div>
                             <div class="parameters-row">
-                                <label class="parameters-col-title" for="id_n_sentence">Minimum sentences</label>
+                                <label class="parameters-col-title" for="id_n_sentence">Minimum sentences
+                                    <a href="#" class="hover">
+                                        <img src="/static/info.svg" alt="infos" width="15" height="15">
+                                        <span>
+                                            This parameter can <b>modulate the Similarity Threshold</b>. It indicates the minimal number of
+                                            sentences you want to retrieve in total. If the threshold is too strict to select enough data,
+                                            it will be <b>lowered until the wanted amount of sentence can be retrieved</b>.
+                                        </span>
+                                    </a>
+                                </label>
                                 <input class="parameters-col-slider" type="range" min="1" max="1000" step="10" id="id_n_sentence" value={{ n_sentence_last_value }} class="slider" name="n_sentence" onchange="updateTextInput(this.value, this.name);">
                                 <input class="parameter-col-value" type="text" id="n_sentence_value" maxlength="4" size="4" value={{ n_sentence_last_value }}>
                             </div>
                             <div class="parameters-row">
-                                <label class="parameters-col-title" for="id_number_cluster">Clusters number</label>
+                                <label class="parameters-col-title" for="id_number_cluster">Cluster number
+                                    <a href="#" class="hover">
+                                        <img src="/static/info.svg" alt="infos" width="15" height="15">
+                                        <span>
+                                            The number of opinion clusters you want to retrieve. If <b>set to zero</b>, this number will be
+                                            <b>automatically estimated by Silhouette score</b>.
+                                        </span>
+                                    </a>
+                                </label>
                                 <input class="parameters-col-slider" type="range" min="0" max="10" step="1" id="id_number_cluster" value={{ number_cluster_last_value }} class="slider" name="number_cluster" onchange="updateTextInput(this.value, this.name);">
                                 <input class="parameter-col-value" type="text" id="number_cluster_value" maxlength="4" size="4" value={{ number_cluster_last_value }}>
                             </div>
                             <div class="parameters-row">
-                                <label class="parameters-col-title" for="id_number_cluster">Min features / cluster</label>
+                                <label class="parameters-col-title" for="id_number_cluster">Cluster size
+                                    <a href="#" class="hover">
+                                        <img src="/static/info.svg" alt="infos" width="15" height="15">
+                                        <span>
+                                            The <b>minimal number of sentences per cluster</b>. It can modulate the number of cluster if the query did not return
+                                            enough results to create the wanted amount of opinions.
+                                        </span>
+                                    </a>
+                                </label>
                                 <input class="parameters-col-slider" type="range" min="1" max="100" step="1" id="id_feature_per_cluster" value={{ feature_per_cluster_last_value }} class="slider" name="feature_per_cluster" onchange="updateTextInput(this.value, this.name);">
                                 <input class="parameter-col-value" type="text" id="feature_per_cluster_value" maxlength="3" size="4" value={{ feature_per_cluster_last_value }}>
                             </div>
@@ -87,7 +112,7 @@
                         </script>
                     </div>
                     <div class="text-output" id="text-output-panel">
-                        <h2>Closest sentences</h2>
+                        <h2>Top-3 closest sentences per cluster</h2>
                         {% for article in text_output %}
                         <div>
                             <h4 class="article-output-sentences">{{ article.sentence }}</h4>

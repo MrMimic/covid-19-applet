@@ -107,7 +107,7 @@ def get_params():
         else:
             params.query.number_of_clusters = int_number_cluster
     except KeyError:
-        pass
+        params.query.number_of_clusters = "auto"
 
     try:
         params.query.min_feature_per_cluster = int(
