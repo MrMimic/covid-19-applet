@@ -12,11 +12,12 @@ from c19_app import security, reader, plot
 from flask_caching import Cache
 from flask.helpers import url_for
 import os
+from waitress import serve
 
 
 LOCAL_DB_PATH = "/home/dynomante/projects/covid-19-kaggle/local_exec/articles_database_v14_02052020_test.sqlite"
 LOCAL_EMBEDDING_PATH = "/home/dynomante/projects/covid-19-kaggle/w2v_parquet_file_new_version.parquet"
-CACHE_TIME = 600
+CACHE_TIME = 6000
 DEBUG = True
 
 # TODO: Make these parameters as arguments
@@ -218,5 +219,5 @@ def main():
 
 
 if __name__ == "__main__":
-    # Run the server
-    app.run(debug=DEBUG, host="0.0.0.0", port=5000)
+    # Run the Waitress server
+    serve(app, host='0.0.0.0', port=5000)

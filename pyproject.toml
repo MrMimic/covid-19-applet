@@ -16,6 +16,7 @@ dataclasses = "^0.7"
 c19 = {git = "https://github.com/MrMimic/covid-19-kaggle"}
 pyarrow = "^0.17.0"
 anyconfig = "^0.9.11"
+waitress = "^1.4.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^3.4"
